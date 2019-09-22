@@ -85,10 +85,3 @@ fabric.properties
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-CHANGELOG.md
-CONTRIBUTORS.md
-cmd/
-configs/
-go.mod
-go.sum
-internal/
