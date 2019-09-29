@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1585aeb2-7cef-4735-8422-c961fc536fbf" name="aliyun" url="http://39.105.110.28">
+        <fileTransfer host="39.105.110.28" port="57122" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions controlEncoding="UTF-8" dataProtectionLevel="Private" keepAliveTimeout="30000" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="57122" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
