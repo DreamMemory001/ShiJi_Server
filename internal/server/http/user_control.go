@@ -2,32 +2,36 @@ package http
 
 import (
 	"encoding/json"
-	"errors"
 	bm "github.com/bilibili/kratos/pkg/net/http/blademaster"
 	"github.com/prometheus/common/log"
 	"io/ioutil"
+	"net/http"
 	"shiji_server/internal/model"
 )
 
-func login(c *bm.Context) {
-	body, err := ioutil.ReadAll(c.Request.Body)
-	var runErr error = nil
-	var k model.User
-
-	// 最后不管是否错误都选择转成json显示
-	defer c.JSON(&k, runErr)
+func covertBody2JSON(body *http.Request, c interface{}) error {
+	bodyBytes, err := ioutil.ReadAll(body.Body)
 
 	if err != nil {
 		log.Info("读取错误")
-		runErr = errors.New("-1")
-		return
+		return http.ErrServerClosed
 	}
 
-	if err = json.Unmarshal(body, &k); err != nil {
+	if err = json.Unmarshal(bodyBytes, &c); err != nil {
 		log.Info("转json错误")
-		runErr = errors.New("-1")
-		return
+		return http.ErrServerClosed
 	}
+
+	return nil
+}
+
+func login(c *bm.Context) {
+	var k model.User
+
+	err := covertBody2JSON(c.Request, &k)
+
+	// 最后不管是否错误都选择转成json显示
+	defer c.JSON(&k, err)
 }
 
 func register(c *bm.Context) {
