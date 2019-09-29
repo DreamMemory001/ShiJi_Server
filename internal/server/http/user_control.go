@@ -1,22 +1,33 @@
 package http
 
 import (
+	"encoding/json"
+	"errors"
 	bm "github.com/bilibili/kratos/pkg/net/http/blademaster"
+	"github.com/prometheus/common/log"
+	"io/ioutil"
 	"shiji_server/internal/model"
 )
 
 func login(c *bm.Context) {
-	query := c.Request.URL.Query()
-	id := query.Get("id")
-	email := query.Get("email")
-	password := query.Get("password")
+	body, err := ioutil.ReadAll(c.Request.Body)
+	var runErr error = nil
+	var k model.User
 
-	k := &model.User{
-		Id:       id,
-		Email:    email,
-		Password: password,
+	// 最后不管是否错误都选择转成json显示
+	defer c.JSON(&k, runErr)
+
+	if err != nil {
+		log.Info("读取错误")
+		runErr = errors.New("-1")
+		return
 	}
-	c.JSON(k, nil)
+
+	if err = json.Unmarshal(body, &k); err != nil {
+		log.Info("转json错误")
+		runErr = errors.New("-1")
+		return
+	}
 }
 
 func register(c *bm.Context) {
