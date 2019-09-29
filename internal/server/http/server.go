@@ -38,9 +38,15 @@ func New(s *service.Service) (engine *bm.Engine) {
 
 func initRouter(e *bm.Engine) {
 	e.Ping(ping)
-	g := e.Group("/shiji_server")
+	g := e.Group("/test")
 	{
 		g.GET("/start", howToStart)
+	}
+
+	user_control := e.Group("/user")
+	{
+		user_control.POST("/login", login)
+		user_control.POST("/register", register)
 	}
 }
 
