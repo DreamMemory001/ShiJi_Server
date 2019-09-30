@@ -27,11 +27,9 @@ func covertBody2JSON(body *http.Request, c interface{}) error {
 
 func login(c *bm.Context) {
 	var k model.User
-
 	err := covertBody2JSON(c.Request, &k)
-
 	// 最后不管是否错误都选择转成json显示
-	defer c.JSON(&k, err)
+	c.JSON(&k, err)
 }
 
 func register(c *bm.Context) {
