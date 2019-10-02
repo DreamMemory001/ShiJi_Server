@@ -6,7 +6,7 @@ import (
 	"github.com/prometheus/common/log"
 	"io/ioutil"
 	"net/http"
-	dao "shiji_server/internal/dao"
+	"shiji_server/internal/dao"
 	"shiji_server/internal/model"
 )
 

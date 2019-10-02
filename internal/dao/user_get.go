@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	_GetUser = ""
-	_AddUser = "INSERT INTO `user` (`Email`, `Password`) VALUES(?, ?)"
+	_GetUser    = ""
+	_AddUser    = "INSERT INTO `user` (`Email`, `Password`) VALUES(?, ?)"
 	_UpdateUser = ""
 )
 
