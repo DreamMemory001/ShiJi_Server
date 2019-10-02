@@ -8,10 +8,10 @@ import (
 	"syscall"
 	"time"
 
-	"shiji_server/internal/server/http"
-	"shiji_server/internal/service"
 	"github.com/bilibili/kratos/pkg/conf/paladin"
 	"github.com/bilibili/kratos/pkg/log"
+	"shiji_server/internal/server/http"
+	"shiji_server/internal/service"
 )
 
 func main() {
@@ -30,6 +30,7 @@ func main() {
 		s := <-c
 		log.Info("get a signal %s", s.String())
 		switch s {
+		// 退出服务
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			ctx, cancel := context.WithTimeout(context.Background(), 35*time.Second)
 			if err := httpSrv.Shutdown(ctx); err != nil {

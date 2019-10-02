@@ -6,6 +6,7 @@ import (
 	"github.com/prometheus/common/log"
 	"io/ioutil"
 	"net/http"
+	dao "shiji_server/internal/dao"
 	"shiji_server/internal/model"
 )
 
@@ -28,13 +29,17 @@ func covertBody2JSON(body *http.Request, c interface{}) error {
 func login(c *bm.Context) {
 	var k model.User
 	err := covertBody2JSON(c.Request, &k)
+	//dao.DaoStruct.AddUser("")
 	// 最后不管是否错误都选择转成json显示
 	c.JSON(&k, err)
 }
 
 func register(c *bm.Context) {
-	k := &model.Kratos{
-		Hello: "Golang 大法好 !!!",
-	}
-	c.JSON(k, nil)
+	var k model.User
+	err := covertBody2JSON(c.Request, &k)
+	daoIns := dao.New()
+	// 这里直接截断
+	err = daoIns.AddUser(c, &k)
+	// 最后不管是否错误都选择转成json显示
+	c.JSON(&k, err)
 }

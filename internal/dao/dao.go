@@ -11,14 +11,14 @@ import (
 	xtime "github.com/bilibili/kratos/pkg/time"
 )
 
-// Dao dao interface
+// dao DaoStruct interface
 type Dao interface {
    Close()
    Ping(ctx context.Context) (err error)
 }
 
-// dao dao.
-type dao struct {
+// DaoStruct DaoStruct.
+type DaoStruct struct {
 	db          *sql.DB
 	//redis       *redis.Pool
 	//redisExpire int32
@@ -32,8 +32,8 @@ func checkErr(err error) {
 	}
 }
 
-// New new a dao and return.
-func New() (Dao) {
+// New new a DaoStruct and return.
+func New() (*DaoStruct) {
 	var (
 		dc struct {
 			sqlConfig *sql.Config
@@ -50,7 +50,7 @@ func New() (Dao) {
 	checkErr(paladin.Get("mysql.toml").UnmarshalTOML(&dc))
 	//checkErr(paladin.Get("redis.toml").UnmarshalTOML(&rc))
 	checkErr(paladin.Get("memcache.toml").UnmarshalTOML(&mc))
-	return &dao{
+	return &DaoStruct{
 		// mysql
 		db: sql.NewMySQL(dc.sqlConfig),
 		// redis
@@ -63,14 +63,14 @@ func New() (Dao) {
 }
 
 // Close close the resource.
-func (d *dao) Close() {
+func (d *DaoStruct) Close() {
 	d.mc.Close()
 	//d.redis.Close()
 	d.db.Close()
 }
 
 // Ping ping the resource.
-func (d *dao) Ping(ctx context.Context) (err error) {
+func (d *DaoStruct) Ping(ctx context.Context) (err error) {
 	if err = d.pingMC(ctx); err != nil {
 		return
 	}
@@ -80,14 +80,14 @@ func (d *dao) Ping(ctx context.Context) (err error) {
 	return d.db.Ping(ctx)
 }
 
-func (d *dao) pingMC(ctx context.Context) (err error) {
+func (d *DaoStruct) pingMC(ctx context.Context) (err error) {
 	if err = d.mc.Set(ctx, &memcache.Item{Key: "ping", Value: []byte("pong"), Expiration: 0}); err != nil {
 		log.Error("conn.Set(PING) error(%v)", err)
 	}
 	return
 }
 
-//func (d *dao) pingRedis(ctx context.Context) (err error) {
+//func (d *DaoStruct) pingRedis(ctx context.Context) (err error) {
 //	conn := d.redis.Get(ctx)
 //	defer conn.Close()
 //	if _, err = conn.Do("SET", "ping", "pong"); err != nil {
