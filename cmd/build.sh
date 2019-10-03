@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
-go build
+#!/usr/bin/sh bash
+go build;
 ./cmd -conf ../configs/

@@ -1,7 +1,7 @@
 
-demoExpire = "24h"
+memCacheExpire = "24h"
 
-[demo]
+[memcache]
 	name = "shiji_server"
 	proto = "tcp"
 	addr = "127.0.0.1:11211"

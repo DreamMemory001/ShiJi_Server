@@ -2,10 +2,10 @@ package dao
 
 import (
 	"context"
+	"github.com/bilibili/kratos/pkg/conf/paladin"
 	"time"
 
 	"github.com/bilibili/kratos/pkg/cache/memcache"
-	"github.com/bilibili/kratos/pkg/conf/paladin"
 	"github.com/bilibili/kratos/pkg/database/sql"
 	"github.com/bilibili/kratos/pkg/log"
 	xtime "github.com/bilibili/kratos/pkg/time"
@@ -36,15 +36,15 @@ func checkErr(err error) {
 func New() (*DaoStruct) {
 	var (
 		dc struct {
-			sqlConfig *sql.Config
+			SqlConfig *sql.Config
 		}
 		//rc struct {
 		//	Demo       *redis.Config
 		//	DemoExpire xtime.Duration
 		//}
 		mc struct {
-			memCache       *memcache.Config
-			memCacheExpire xtime.Duration
+			MemCache       *memcache.Config
+			MemCacheExpire xtime.Duration
 		}
 	)
 	checkErr(paladin.Get("mysql.toml").UnmarshalTOML(&dc))
@@ -52,13 +52,13 @@ func New() (*DaoStruct) {
 	checkErr(paladin.Get("memcache.toml").UnmarshalTOML(&mc))
 	return &DaoStruct{
 		// mysql
-		db: sql.NewMySQL(dc.sqlConfig),
+		db: sql.NewMySQL(dc.SqlConfig),
 		// redis
 		//redis:       redis.NewPool(rc.Demo),
 		//redisExpire: int32(time.Duration(rc.DemoExpire) / time.Second),
 		// memcache
-		mc:       memcache.New(mc.memCache),
-		mcExpire: int32(time.Duration(mc.memCacheExpire) / time.Second),
+		mc:       memcache.New(mc.MemCache),
+		mcExpire: int32(time.Duration(mc.MemCacheExpire) / time.Second),
 	}
 }
 
