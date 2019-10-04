@@ -26,6 +26,8 @@ func (d *DaoStruct) GetUser(c context.Context, user *model.User) (re string, err
 func (d *DaoStruct) AddUser(c context.Context, user *model.User) (num int64, err error) {
 	var res sql.Result
 
+	
+
 	if res, err = d.db.Exec(c, _AddUser, user.Email, user.Password); err != nil {
 		log.Error("incr user base err(%v)", err)
 		// 返回错误

@@ -39,7 +39,7 @@ func register(c *bm.Context) {
 	err := covertBody2JSON(c.Request, &k)
 	daoIns := dao.New()
 	// 这里直接截断
-	_, err = daoIns.AddUser(c, &k)
+	id, err := daoIns.AddUser(c, &k)
 	// 最后不管是否错误都选择转成json显示
-	c.JSON(&k, err)
+	c.JSON(&model.Msg{Id: string(id)}, err)
 }
