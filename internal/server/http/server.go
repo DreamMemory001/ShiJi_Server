@@ -48,6 +48,12 @@ func initRouter(e *bm.Engine) {
 		user_control.POST("/login", login)
 		user_control.POST("/register", register)
 	}
+
+	search_control := e.Group("/search")
+	{
+		search_control.POST("/getSearchHistory", searchHistoryGetter)
+		search_control.POST("/updateSearchHistory", searchHistoryUpdater)
+	}
 }
 
 func ping(ctx *bm.Context) {
