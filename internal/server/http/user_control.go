@@ -31,9 +31,10 @@ func login(c *bm.Context) {
 	var k model.User
 	err := covertBody2JSON(c.Request, &k)
 	daoIns := dao.New()
-	scanUser, err := daoIns.GetUser(c, &k)
-	k.Id = scanUser.Id
-	err = utils.PwdDecode(scanUser.Password, k.Password)
+	id, name, password, err := daoIns.GetUser(c, &k)
+	k.Id = id
+	k.Name = name
+	err = utils.PwdDecode(password, k.Password)
 	// 最后不管是否错误都选择转成json显示
 	c.JSON(&k, err)
 }

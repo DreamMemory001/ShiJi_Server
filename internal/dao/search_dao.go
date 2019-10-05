@@ -11,12 +11,6 @@ var (
 )
 
 func (d *DaoStruct) GetSearchHistory(c context.Context, history *model.SearchHistory) (userGot model.User, err error) {
-	err = d.db.QueryRow(c, _GetUser, user.Email).Scan(&userGot.Id, &userGot.Email, &userGot.Password)
-	if err != nil && err != sql.ErrNoRows {
-		log.Error("user.Query error(%v)", err)
-		// 这里直接返回错误跟userGot
-		return
-	}
 	return
 }
 

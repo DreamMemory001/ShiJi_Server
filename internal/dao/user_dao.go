@@ -9,13 +9,13 @@ import (
 )
 
 var (
-	_GetUser    = "SELECT * FROM `user` where `Email` = ?"
-	_AddUser    = "INSERT INTO `user` (`Email`, `Password`) VALUES(?, ?)"
+	_GetUser    = "SELECT `Id`, `Name`, `Password` FROM `user` where `Email` = ?"
+	_AddUser    = "INSERT INTO `user` (`Name`, `Email`, `Password`) VALUES(?, ?, ?)"
 	_UpdateUser = ""
 )
 
-func (d *DaoStruct) GetUser(c context.Context, user *model.User) (userGot model.User, err error) {
-	err = d.db.QueryRow(c, _GetUser, user.Email).Scan(&userGot.Id, &userGot.Email, &userGot.Password)
+func (d *DaoStruct) GetUser(c context.Context, user *model.User) (id uint, name, password string, err error) {
+	err = d.db.QueryRow(c, _GetUser, user.Email).Scan(&id, &name, &password)
 	if err != nil && err != sql.ErrNoRows {
 		log.Error("user.Query error(%v)", err)
 		// 这里直接返回错误跟userGot
@@ -32,7 +32,7 @@ func (d *DaoStruct) AddUser(c context.Context, user *model.User) (num int64, err
 		return
 	}
 
-	if res, err = d.db.Exec(c, _AddUser, user.Email, encodePwd); err != nil {
+	if res, err = d.db.Exec(c, _AddUser, user.Name, user.Email, encodePwd); err != nil {
 		log.Error("incr user base err(%v)", err)
 		// 返回错误
 		return
