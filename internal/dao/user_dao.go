@@ -9,19 +9,19 @@ import (
 )
 
 var (
-	_GetUser    = "SELECT * FROM `user`"
+	_GetUser    = "SELECT * FROM `user` where `Email` = ?"
 	_AddUser    = "INSERT INTO `user` (`Email`, `Password`) VALUES(?, ?)"
 	_UpdateUser = ""
 )
 
-func (d *DaoStruct) GetUser(c context.Context, user *model.User) (re string, err error) {
-	err = d.db.QueryRow(c, _GetUser).Scan(&re)
+func (d *DaoStruct) GetUser(c context.Context, user *model.User) (userGot model.User, err error) {
+	err = d.db.QueryRow(c, _GetUser, user.Email).Scan(&userGot.Id, &userGot.Email, &userGot.Password)
 	if err != nil && err != sql.ErrNoRows {
-		log.Error("d.GetDemo.Query error(%v)", err)
-		// 这里直接返回错误跟空re了
+		log.Error("user.Query error(%v)", err)
+		// 这里直接返回错误跟userGot
 		return
 	}
-	return re, nil
+	return
 }
 
 func (d *DaoStruct) AddUser(c context.Context, user *model.User) (num int64, err error) {

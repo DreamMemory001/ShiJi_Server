@@ -16,7 +16,7 @@ func PwdEncode(pwdString string) (encodePwd string, err error) {
 	return string(hash), nil
 }
 
-func PwdDecode(pwdString string) (err error) {
-	err = bcrypt.CompareHashAndPassword([]byte(encodePW), []byte(passwordOK))
+func PwdDecode(sqlPwdString string, userPwdString string) (err error) {
+	err = bcrypt.CompareHashAndPassword([]byte(sqlPwdString), []byte(userPwdString))
 	return
 }

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"shiji_server/internal/dao"
 	"shiji_server/internal/model"
+	"shiji_server/utils"
 )
 
 func covertBody2JSON(body *http.Request, c interface{}) error {
@@ -15,21 +16,24 @@ func covertBody2JSON(body *http.Request, c interface{}) error {
 
 	if err != nil {
 		log.Info("读取错误")
-		return http.ErrServerClosed
+		return err
 	}
 
 	if err = json.Unmarshal(bodyBytes, &c); err != nil {
 		log.Info("转json错误")
-		return http.ErrServerClosed
+		return err
 	}
 
-	return nil
+	return err
 }
 
 func login(c *bm.Context) {
 	var k model.User
 	err := covertBody2JSON(c.Request, &k)
-	//dao.DaoStruct.AddUser("")
+	daoIns := dao.New()
+	scanUser, err := daoIns.GetUser(c, &k)
+	k.Id = scanUser.Id
+	err = utils.PwdDecode(scanUser.Password, k.Password)
 	// 最后不管是否错误都选择转成json显示
 	c.JSON(&k, err)
 }
@@ -39,7 +43,7 @@ func register(c *bm.Context) {
 	err := covertBody2JSON(c.Request, &k)
 	daoIns := dao.New()
 	// 这里直接截断
-	id, err := daoIns.AddUser(c, &k)
+	_, err = daoIns.AddUser(c, &k)
 	// 最后不管是否错误都选择转成json显示
-	c.JSON(&model.Msg{Id: string(id)}, err)
+	c.JSON(&k, err)
 }
