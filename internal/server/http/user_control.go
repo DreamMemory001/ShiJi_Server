@@ -1,35 +1,22 @@
 package http
 
 import (
-	"encoding/json"
 	bm "github.com/bilibili/kratos/pkg/net/http/blademaster"
-	"github.com/prometheus/common/log"
-	"io/ioutil"
 	"net/http"
 	"shiji_server/internal/dao"
 	"shiji_server/internal/model"
 	"shiji_server/utils"
 )
 
-func covertBody2JSON(body *http.Request, c interface{}) error {
-	bodyBytes, err := ioutil.ReadAll(body.Body)
-
-	if err != nil {
-		log.Info("读取错误")
-		return err
-	}
-
-	if err = json.Unmarshal(bodyBytes, &c); err != nil {
-		log.Info("转json错误")
-		return err
-	}
-
-	return err
+func covertBody2User(body *http.Request, user *model.User) {
+	user.Name = body.Form.Get("Name")
+	user.Email = body.Form.Get("Email")
+	user.Password = body.Form.Get("Password")
 }
 
 func login(c *bm.Context) {
 	var k model.User
-	err := covertBody2JSON(c.Request, &k)
+	covertBody2User(c.Request, &k)
 	daoIns := dao.New()
 	id, name, password, err := daoIns.GetUser(c, &k)
 	k.Id = id
@@ -41,10 +28,11 @@ func login(c *bm.Context) {
 
 func register(c *bm.Context) {
 	var k model.User
-	err := covertBody2JSON(c.Request, &k)
+	covertBody2User(c.Request, &k)
 	daoIns := dao.New()
 	// 这里直接截断
-	_, err = daoIns.AddUser(c, &k)
+	id, err := daoIns.AddUser(c, &k)
+	k.Id = uint(id)
 	// 最后不管是否错误都选择转成json显示
 	c.JSON(&k, err)
 }
