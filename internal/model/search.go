@@ -4,6 +4,7 @@ type SearchMapResult struct {
 }
 
 type SearchVectorResult struct {
+	
 }
 
 type SearchAnsResult struct {

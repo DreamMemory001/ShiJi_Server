@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	_GetSearchHistory    = "SELECT `History` FROM `search_history` WHERE `id` = ?"
+	_GetSearchHistory    = "SELECT `History` FROM `search_history` WHERE `Id` = ?"
 	_UpdateSearchHistory = "UPDATE `search_history` SET `History` = ? WHERE `Id` = ?"
 	_AddSearchHistory = "INSERT INTO `search_history` (`Id`, `History`) VALUES(?, ?)"
 
@@ -41,7 +41,7 @@ func (d *DaoStruct) UpdateSearchHistory(c context.Context, history *model.Search
 }
 
 func (d *DaoStruct) AddSearchHistory(c context.Context, user *model.User) (err error) {
-	if _, err = d.db.Exec(c, _AddSearchHistory, user.Id, ""); err != nil {
+	if _, err = d.db.Exec(c, _AddSearchHistory, user.Id, "|"); err != nil {
 		log.Error("incr user base err(%v)", err)
 		// 返回错误
 		return
@@ -62,14 +62,21 @@ func (d *DaoStruct) GetSearchMap(c context.Context, user *model.User) (err error
 	return
 }
 
-func (d *DaoStruct) GetSearchVector(c context.Context, user *model.User) (err error) {
-	if _, err = d.db.Exec(c, _AddSearchHistory, user.Id, ""); err != nil {
-		log.Error("incr user base err(%v)", err)
-		// 返回错误
+func (d *DaoStruct) GetSearchVector(c context.Context, searchWord string) (answer []model.SearchVectorResult, err error) {
+	rows, err := d.db.Query(c, _GetSearchAns, searchWord)
+	if err != nil {
+		log.Error("query  error(%v)", err)
 		return
 	}
-
-	// 这里直接返回id
+	defer rows.Close()
+	for rows.Next() {
+		var tmp model.SearchVectorResult
+		if err = rows.Scan(&tmp.BookName, &tmp.Title, &tmp.Content); err != nil {
+			log.Error("scan demo log error(%v)", err)
+			return
+		}
+		answer = append(answer, tmp)
+	}
 	return
 }
 
