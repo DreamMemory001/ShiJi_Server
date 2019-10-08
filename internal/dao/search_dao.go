@@ -11,6 +11,12 @@ var (
 	_GetSearchHistory    = "SELECT `History` FROM `search_history` WHERE `id` = ?"
 	_UpdateSearchHistory = "UPDATE `search_history` SET `History` = ? WHERE `Id` = ?"
 	_AddSearchHistory = "INSERT INTO `search_history` (`Id`, `History`) VALUES(?, ?)"
+
+	_GetSearchMap = ""
+	_GetSearchVector = ""
+	// 嵌套查询
+	_GetSearchAns = "SELECT `BookName`, `Title`, `Content` FROM `ancient_book_all` WHERE `Id` = ANY(" +
+		"SELECT `BookId` FROM `ancient_book_cut` WHERE `CutWord` = ?)"
 )
 
 func (d *DaoStruct) GetSearchHistory(c context.Context, history *model.SearchHistory) (err error) {
@@ -56,7 +62,7 @@ func (d *DaoStruct) GetSearchMap(c context.Context, user *model.User) (err error
 	return
 }
 
-func (d *DaoStruct) GetSearchVectot(c context.Context, user *model.User) (err error) {
+func (d *DaoStruct) GetSearchVector(c context.Context, user *model.User) (err error) {
 	if _, err = d.db.Exec(c, _AddSearchHistory, user.Id, ""); err != nil {
 		log.Error("incr user base err(%v)", err)
 		// 返回错误
@@ -67,13 +73,21 @@ func (d *DaoStruct) GetSearchVectot(c context.Context, user *model.User) (err er
 	return
 }
 
-func (d *DaoStruct) GetSearchAns(c context.Context, user *model.User) (err error) {
-	if _, err = d.db.Exec(c, _AddSearchHistory, user.Id, ""); err != nil {
-		log.Error("incr user base err(%v)", err)
-		// 返回错误
+// 查询所在词在数据库中的所在
+func (d *DaoStruct) GetSearchAns(c context.Context, searchWord string) (answer []model.SearchAnsResult, err error) {
+	rows, err := d.db.Query(c, _GetSearchAns, searchWord)
+	if err != nil {
+		log.Error("query  error(%v)", err)
 		return
 	}
-
-	// 这里直接返回id
+	defer rows.Close()
+	for rows.Next() {
+		var tmp model.SearchAnsResult
+		if err = rows.Scan(&tmp.BookName, &tmp.Title, &tmp.Content); err != nil {
+			log.Error("scan demo log error(%v)", err)
+			return
+		}
+		answer = append(answer, tmp)
+	}
 	return
 }
