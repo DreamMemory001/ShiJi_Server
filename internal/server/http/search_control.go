@@ -5,7 +5,6 @@ import (
 )
 
 func searchHistoryGetter(c *bm.Context) {
-
 }
 
 func searchHistoryUpdater(c *bm.Context) {

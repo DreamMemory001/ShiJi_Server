@@ -33,6 +33,7 @@ func register(c *bm.Context) {
 	// 这里直接截断
 	id, err := daoIns.AddUser(c, &k)
 	k.Id = uint(id)
+	err = daoIns.AddSearchHistory(c, &k)
 	// 最后不管是否错误都选择转成json显示
 	c.JSON(&k, err)
 }

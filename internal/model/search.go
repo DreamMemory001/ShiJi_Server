@@ -1,7 +1,12 @@
 package model
 
-type SearchResult struct {
+type SearchMapResult struct {
+}
 
+type SearchVectorResult struct {
+}
+
+type SearchAnsResult struct {
 }
 
 type SearchHistory struct {
