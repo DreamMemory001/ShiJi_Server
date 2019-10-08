@@ -51,8 +51,12 @@ func initRouter(e *bm.Engine) {
 
 	search_control := e.Group("/search")
 	{
-		search_control.POST("/getSearchHistory", searchHistoryGetter)
-		search_control.POST("/updateSearchHistory", searchHistoryUpdater)
+		search_control.POST("/get_history", searchHistoryGetter)
+		search_control.POST("/update_history", searchHistoryUpdater)
+
+		search_control.POST("/ans", searchAnsGetter)
+		search_control.POST("/map", searchMapGetter)
+		search_control.POST("/vec", searchWordVecGetter)
 	}
 }
 
