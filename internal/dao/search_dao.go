@@ -13,7 +13,9 @@ var (
 	_AddSearchHistory = "INSERT INTO `search_history` (`Id`, `History`) VALUES(?, ?)"
 
 	_GetSearchMap = ""
-	_GetSearchVector = ""
+	_GetSearchVector = "SELECT BookName, SUM(Counts) AS Sums FROM (SELECT BookName, COUNT(CutWord = ?)" +
+		" AS Counts FROM (SELECT BookId, CutWord, BookName FROM ancient_book_cut, ancient_book_all WHERE ancient_book_cut.BookId = ancient_book_all.Id) " +
+		" AS p GROUP BY BookId) AS pp GROUP BY BookName"
 	// 嵌套查询
 	_GetSearchAns = "SELECT `BookName`, `Title`, `Content` FROM `ancient_book_all` WHERE `Id` = ANY(" +
 		"SELECT `BookId` FROM `ancient_book_cut` WHERE `CutWord` = ?)"
@@ -63,7 +65,7 @@ func (d *DaoStruct) GetSearchMap(c context.Context, user *model.User) (err error
 }
 
 func (d *DaoStruct) GetSearchVector(c context.Context, searchWord string) (answer []model.SearchVectorResult, err error) {
-	rows, err := d.db.Query(c, _GetSearchAns, searchWord)
+	rows, err := d.db.Query(c, _GetSearchVector, searchWord)
 	if err != nil {
 		log.Error("query  error(%v)", err)
 		return
@@ -71,7 +73,7 @@ func (d *DaoStruct) GetSearchVector(c context.Context, searchWord string) (answe
 	defer rows.Close()
 	for rows.Next() {
 		var tmp model.SearchVectorResult
-		if err = rows.Scan(&tmp.BookName, &tmp.Title, &tmp.Content); err != nil {
+		if err = rows.Scan(&tmp.BookName, &tmp.Sums); err != nil {
 			log.Error("scan demo log error(%v)", err)
 			return
 		}

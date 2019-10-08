@@ -4,7 +4,8 @@ type SearchMapResult struct {
 }
 
 type SearchVectorResult struct {
-	
+	BookName string
+	Sums int32
 }
 
 type SearchAnsResult struct {
