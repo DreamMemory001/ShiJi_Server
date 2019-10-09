@@ -13,9 +13,9 @@ var (
 	_AddSearchHistory = "INSERT INTO `search_history` (`Id`, `History`) VALUES(?, ?)"
 
 	_GetSearchMap = ""
-	_GetSearchVector = "SELECT BookName, SUM(Counts) AS Sums FROM (SELECT BookName, COUNT(CutWord = ?)" +
-		" AS Counts FROM (SELECT BookId, CutWord, BookName FROM ancient_book_cut, ancient_book_all WHERE ancient_book_cut.BookId = ancient_book_all.Id) " +
-		" AS p GROUP BY BookId) AS pp GROUP BY BookName"
+	_GetSearchVector = "SELECT BookName, SUM(Counts) AS Sums FROM (" +
+		"SELECT BookName, COUNT(*) AS Counts FROM (SELECT BookId, CutWord, BookName FROM ancient_book_cut, ancient_book_all WHERE ancient_book_cut.BookId = ancient_book_all.Id AND CutWord = ?) AS p GROUP BY BookId" +
+		") AS pp GROUP BY BookName ORDER BY Sums ASC"
 	// 嵌套查询
 	_GetSearchAns = "SELECT `BookName`, `Title`, `Content` FROM `ancient_book_all` WHERE `Id` = ANY(" +
 		"SELECT `BookId` FROM `ancient_book_cut` WHERE `CutWord` = ?)"

@@ -6,6 +6,6 @@
 	active = 20
 	idle = 10
 	idleTimeout ="4h"
-	queryTimeout = "2000ms"
-	execTimeout = "3000ms"
-	tranTimeout = "4000ms"
+	queryTimeout = "20000ms"
+	execTimeout = "30000ms"
+	tranTimeout = "40000ms"
