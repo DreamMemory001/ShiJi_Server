@@ -18,7 +18,7 @@ var (
 		") AS pp GROUP BY BookName ORDER BY Sums ASC"
 	// 嵌套查询
 	_GetSearchAns = "SELECT `BookName`, `Title`, `Content` FROM `ancient_book_all` WHERE `Id` = ANY(" +
-		"SELECT `BookId` FROM `ancient_book_cut` WHERE `CutWord` = ?)"
+		"SELECT `BookId` FROM `ancient_book_cut` WHERE `CutWord` = ?) LIMIT 20"
 )
 
 func (d *DaoStruct) GetSearchHistory(c context.Context, history *model.SearchHistory) (err error) {
